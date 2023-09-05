@@ -1,0 +1,16 @@
+[package]
+name = "common-async"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures = { version = "0.3.15", default-features = false, features = ["std"] }
+futures-util = { version = "0.3.15", default-features = false }
+tokio = { version = "1.28.2", default-features = false, features = ["net", "signal", "macros", "time", "rt-multi-thread"] }
+tokio-stream = { version = "0.1.9", default-features = false, features = ["net"] }
+pin-utils = "0.1.0"
+
+log.workspace = true

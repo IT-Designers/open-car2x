@@ -1,0 +1,33 @@
+[package]
+name = "connector"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+[lib]
+name = "connector"
+crate-type = ["lib", "staticlib", "cdylib"]
+
+[build-dependencies]
+cbindgen = "0.15.0"
+regex = "1.5.4"
+
+common-build-info = { path = "../common-build-info" }
+
+[dependencies]
+cstr = "0.2.5"
+itertools = "0.9.0"
+num-traits = "0.2"
+num-derive = "0.3"
+
+log.workspace = true
+thiserror.workspace = true
+strum.workspace = true
+strum_macros.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+cstr-derive = { path = "../cstr-derive" }
+common-build-info = { path = "../common-build-info" }
+common-edge = { path = "../common-edge", features = ["protobuf"] }
+common-log-build-info = { path = "../common-log-build-info" }

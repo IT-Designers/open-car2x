@@ -1,0 +1,65 @@
+ITD-SSDM-Descriptions
+DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+DebugRequest ::= SEQUENCE {
+    mode ENUMERATED {
+        retrieve-once,
+        subscribe,
+        unsubscribe
+    },
+    message-id ENUMERATED {
+        component-status,
+        all(255)
+    }
+}
+
+ComponentStatus ::= SEQUENCE {
+    unix-timestamp-millis     INTEGER (0..MAX),
+    alive-sensors             BIT STRING (SIZE(50)),
+    alive-server-modules      BIT STRING {
+        environment-and-prediction-module(0),
+        warn-module                      (1),
+        cooperative-module               (2),
+        placeholder4-module              (3),
+        placeholder5-module              (4)
+    } (SIZE(5)),
+    alive-autonomous-vehicles BIT STRING {
+        vehicle-01-cam(0), vehicle-01-cpm(1),
+        vehicle-02-cam(2), vehicle-02-cpm(3),
+        vehicle-03-cam(4), vehicle-03-cpm(5),
+        vehicle-04-cam(6), vehicle-04-cpm(7),
+        vehicle-05-cam(8), vehicle-05-cpm(9)
+    } (SIZE(10)),
+    alive-connected-vehicles  BIT STRING {
+        vehicle-09-cam(0),
+        vehicle-10-cam(1),
+        vehicle-11-cam(2),
+        vehicle-12-cam(3),
+        vehicle-13-cam(4),
+        vehicle-14-cam(5),
+        vehicle-15-cam(6),
+        vehicle-16-cam(7),
+        vehicle-17-cam(8),
+        vehicle-18-cam(9)
+    } (SIZE(10)),
+    alive-nomadic-devices     BIT STRING {
+        nomadic-device-01-vam(0), -- VRU-ITD-Pedestrian
+        nomadic-device-02-vam(1), -- VRU-ITD-Pedestrian
+        nomadic-device-03-vam(2), -- VRU-ITD-Pedestrian
+        nomadic-device-04-vam(3), -- VRU-ITD-Pedestrian
+        nomadic-device-05-vam(4), -- VRU-ITD-Pedestrian
+        nomadic-device-06-vam(5), -- VRU-NOKIA-Bicycle
+        nomadic-device-07-vam(6), -- VRU-NOKIA-Bicycle
+        nomadic-device-08-vam(7), -- VRU-NOKIA-Bicycle
+        nomadic-device-09-vam(8), -- VRU-NOKIA-Bicycle
+        nomadic-device-10-vam(9)  -- VRU-NOKIA-Bicycle
+    } (SIZE(10)),
+    other                     BIT STRING {
+        all-components-nominal(0),
+        placeholder-0         (1),
+        placeholder-1         (2)
+    } (SIZE(3))
+}
+
+END

@@ -1,0 +1,17 @@
+[package]
+name = "common-amqp"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+common-message = { path = "../common-message" }
+
+log.workspace = true
+
+
+[dependencies.dove]
+git = "https://github.com/kellerkindt/dove.git"
+rev = "0a8db0ee0fd84804f81c1cf57837ecbf1c7bbc74"

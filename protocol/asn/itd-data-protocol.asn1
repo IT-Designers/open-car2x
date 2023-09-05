@@ -1,0 +1,111 @@
+ItdDataProtocolModule DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+
+Identity ::= ENUMERATED {
+    client,
+    server,
+    data-server,
+    persistence,
+    fusion-algo,
+    road-clearance-module,
+    fusion-algo-timeout-detector,
+    edge-application,
+    vehicle,
+    nomadic-device,
+    planning-module,
+    warning-module,
+    
+    reserved(31)
+}
+
+MessageMode ::= ENUMERATED {
+    received,
+    sent,
+    connect,
+    disconnect
+}
+
+Action ::= ENUMERATED {
+    received,
+    sent,
+    connect,
+    disconnect,
+    decoding-failed,
+    created,
+    decoding-succeeded,
+    encoding-failed,
+    encoding-succeeded
+}
+
+TrackingEvent ::= SEQUENCE {
+    timestamp           INTEGER (0..MAX),
+    submilli-nanos      INTEGER (0..999999),
+    session-id          INTEGER (0..MAX),
+    session-ip          UTF8String,
+    session-identity    Identity,
+    action              Action
+}
+
+DataMessage ::= SEQUENCE {
+    session-id          INTEGER (0..MAX),
+    session-ip          UTF8String,
+    session-identity    Identity,
+    msg-mode            MessageMode,
+    timestamp           INTEGER (0..MAX),
+    encoded-data        OCTET STRING OPTIONAL
+}
+
+TrackingInformation ::= SEQUENCE {
+    timestamp    INTEGER (0..MAX),
+    protocol     INTEGER (0..65535),
+    message-id   INTEGER (0..65535),
+    message-body OCTET STRING,
+    events       SEQUENCE OF TrackingEvent
+}
+
+DataSupplement ::= SEQUENCE {
+    session-id          INTEGER (0..MAX),
+    session-ip          UTF8String,
+    session-identity    Identity,
+    msg-mode            MessageMode,
+    timestamp           INTEGER (0..MAX),
+    encoded-data-length INTEGER (0..8000)
+}
+
+MalformedMessage ::= SEQUENCE {
+    session-id          INTEGER (0..MAX),
+    session-ip          UTF8String,
+    session-identity    Identity,
+    msg-mode            MessageMode,
+    timestamp           INTEGER (0..MAX),
+    encoded-data        OCTET STRING
+}
+
+MalformedContent ::= SEQUENCE {
+    encoded-data        OCTET STRING
+}
+
+Version ::= SEQUENCE {
+    major       INTEGER(0..255),
+    minor       INTEGER(0..255),
+    patch       INTEGER(0..255)
+}
+
+BuildInfo ::= SEQUENCE {
+    git-hash    UTF8String,
+    ci-platform UTF8String,
+    profile     UTF8String,
+    time        UTF8String,
+    compiler    UTF8String
+}
+
+ApplicationInfo ::= SEQUENCE {
+    identity    Identity,
+    version     Version,
+    build       BuildInfo,
+    args        SEQUENCE OF UTF8String,
+    additional  UTF8String
+}
+
+END

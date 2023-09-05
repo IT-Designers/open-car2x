@@ -1,0 +1,26 @@
+syntax = 'proto3';
+package itd.ssdm.descriptions;
+
+
+enum DebugRequestMode {
+    DEBUG_REQUEST_MODE_RETRIEVE_ONCE = 0;
+    DEBUG_REQUEST_MODE_SUBSCRIBE = 1;
+    DEBUG_REQUEST_MODE_UNSUBSCRIBE = 2;
+}
+enum DebugRequestMessageId {
+    DEBUG_REQUEST_MESSAGE_ID_COMPONENT_STATUS = 0;
+    DEBUG_REQUEST_MESSAGE_ID_ALL = 1;
+}
+message DebugRequest {
+    DebugRequestMode mode = 1;
+    DebugRequestMessageId message_id = 2;
+}
+message ComponentStatus {
+    uint64 unix_timestamp_millis = 1;
+    bytes alive_sensors = 2;
+    bytes alive_server_modules = 3;
+    bytes alive_autonomous_vehicles = 4;
+    bytes alive_connected_vehicles = 5;
+    bytes alive_nomadic_devices = 6;
+    bytes other = 7;
+}

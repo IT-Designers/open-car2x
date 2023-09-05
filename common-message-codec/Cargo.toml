@@ -1,0 +1,22 @@
+[package]
+name = "common-message-codec"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bytes = "1.0.1"
+byteorder = "1.4.3"
+bson = "2.0.1"
+tokio-util = { version = "0.6.7", features = ["codec"] }
+
+serde.workspace = true
+serde_derive.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+asn1rs.workspace = true
+
+common-message = { path = "../common-message" }
+messages = { path = "../messages" }

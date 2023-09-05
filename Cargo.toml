@@ -1,0 +1,41 @@
+[profile.release]
+strip = true
+debug = false
+
+# Optimized for performacne, if this library compiles to slowly for you, remove the options below
+lto = true
+codegen-units = 1
+
+[workspace.package]
+version = "11.0.0"
+authors = ["Michael Watzko <michael.watzko@it-designers.de>"]
+# description = ""
+# documentation = ""
+
+[workspace.dependencies]
+thiserror = "1.0.35"
+log = "0.4.17"
+asn1rs = "0.3.1"
+strum = { version = "0.21.0", features = ["derive"] }
+strum_macros = { version = "0.21.0" }
+serde = { version = "1.0.188", features = ["derive"] }
+serde_derive = "1.0.188"
+serde_json = "1.0.105"
+
+
+[workspace]
+resolver = "2"
+members = [
+    "common-amqp",
+    "common-async",
+    "common-build-info",
+    "common-edge",
+    "common-log",
+    "common-log-build-info",
+    "common-message",
+    "common-message-codec",
+    "cstr-derive",
+    "libconnector",
+    "libconnector-jni",
+    "messages",
+]

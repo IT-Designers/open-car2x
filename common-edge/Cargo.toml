@@ -1,0 +1,29 @@
+[package]
+name = "common-edge"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+asn1rs.workspace = true
+log.workspace = true
+thiserror.workspace = true
+
+common-amqp = { path = "../common-amqp" }
+common-async = { path = "../common-async" }
+common-message = { path = "../common-message" }
+common-message-codec = { path = "../common-message-codec" }
+messages = { path = "../messages" }
+
+# # common = { path = "../common" }
+# common-edge-metrics = { path = "../common-edge-metrics" }
+# common-host-env = { path = "../common-host-env" }
+# common-message-metrics = { path = "../common-message-metrics" }
+# common-metrics-prometheus = { path = "../common-metrics-prometheus" }
+# common-websocket = { path = "../common-websocket", optional = true }
+
+[features]
+# websocket = ["common-websocket", "common-websocket/client"]
+#uulm-raw-bson = ["common-message-codec/uulm-raw-bson"]
+protobuf = ["messages/protobuf"]

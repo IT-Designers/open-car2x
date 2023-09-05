@@ -1,0 +1,10 @@
+.idea*
+target/
+libconnector-java/target/
+libconnector-java/src/main/proto/
+
+# until the copyright is clear
+protocol/asn
+protocol/proto
+protocol/sql
+messages/src

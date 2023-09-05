@@ -1,0 +1,15 @@
+[package]
+name = "common-build-info"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num_cpus = "1.13.0"
+
+messages = { path = "../messages" }
+
+[build-dependencies]
+built = { version = "0.5.2", features = ["chrono", "git2"] }

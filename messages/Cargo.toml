@@ -1,0 +1,25 @@
+[package]
+name = "messages"
+edition = "2021"
+version.workspace = true
+authors.workspace = true
+
+[dependencies]
+asn1rs.workspace = true
+
+serde = { version = "1.0.126", optional = true, features = ["derive"] }
+
+[build-dependencies]
+asn1rs.workspace = true
+
+[features]
+default = ["derive-serde"]
+derive-serde = ["serde"]
+
+psql = ["asn1rs/psql"]
+async-psql = ["asn1rs/async-psql"]
+protobuf = ["asn1rs/protobuf"]
+
+asn1compilertest = []
+
+mecview = ["psql", "async-psql"]

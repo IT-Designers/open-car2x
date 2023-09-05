@@ -1,0 +1,6 @@
+language = "C"
+include_guard = "connector_h"
+
+[enum]
+rename_variants = "QualifiedScreamingSnakeCase"
+prefix_with_name = false
