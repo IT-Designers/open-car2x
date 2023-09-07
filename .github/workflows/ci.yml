@@ -48,5 +48,13 @@ jobs:
           (cd ..; cargo clean)
           ./gradlew assembleRelease --info
           cp libconnector-android/build/outputs/aar/*.aar .
-          ls -lah jni/*
+          mkdir test && cd test && unzip ../libconnector-android-release.aar
+          file jni/arm64-v8a/libconnector_jni.so
+          file jni/x86/libconnector_jni.so
+          file jni/x86_64/libconnector_jni.so
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector-android
+          path: libconnector-android/libconnector-android-release.aar
   
