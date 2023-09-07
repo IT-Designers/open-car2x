@@ -20,16 +20,16 @@ jobs:
       - name: Build
         run:  |
           cargo build --release
-          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies-linux
+          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies
       - name: Run tests
         run: cargo test --release
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: libconnector
+          name: libconnector-linux
           path: |
             target/release/*connector*.so
-            target/release/LICENSE-dependencies-linux
+            target/release/LICENSE-dependencies
 
   build-windows:
     runs-on: ubuntu-latest
@@ -45,14 +45,14 @@ jobs:
         run:  |
           cargo build --release --target x86_64-pc-windows-gnu
           mv target/x86_64-pc-windows-gnu/release/*connector*.dll target/release/
-          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies-windows
+          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: libconnector
+          name: libconnector-windows
           path: |
             target/release/*connector*.dll
-            target/release/LICENSE-dependencies-windows
+            target/release/LICENSE-dependencies
 
   build-java:
     runs-on: ubuntu-latest
