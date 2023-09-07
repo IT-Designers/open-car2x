@@ -27,6 +27,9 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     steps:
+      - name: Install dependencies
+        run: |
+          apt update && apt install protobuf-compiler -y
       - uses: actions/checkout@v3
       - name: Build
         run:  |
