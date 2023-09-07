@@ -45,6 +45,8 @@ jobs:
           mkdir -p ../libconnector-java/src/main/proto
           cp ../protocol/proto/{itd_ssdm_descriptions,cam*,cpm*,denm*,dsrc*,its*,mcm*,vam*,vru*}.proto $PROTO_DIR
           protoc $PROTO_DIR/*.proto --proto_path=$PROTO_DIR --java_out=../libconnector-java/src/main/proto
+          ls -lah $PROTO_DIR
+          ls -lah ../libconnector-java/src/main/proto
           (cd ..; cargo clean)
           ./gradlew assembleRelease --info
           cp libconnector-android/build/outputs/aar/*.aar .
@@ -52,6 +54,7 @@ jobs:
           file jni/arm64-v8a/libconnector_jni.so
           file jni/x86/libconnector_jni.so
           file jni/x86_64/libconnector_jni.so
+          ls -lah jni/*
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
