@@ -28,7 +28,7 @@ jobs:
         with:
           name: libconnector
           path: |
-            target/release/libconnector.so
+            target/release/*connector*.so
             target/release/LICENSE-dependencies-linux
 
   build-windows:
@@ -44,13 +44,14 @@ jobs:
       - name: Build
         run:  |
           cargo build --release --target x86_64-pc-windows-gnu
+          mv target/x86_64-pc-windows-gnu/release/*connector*.dll target/release/
           cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies-windows
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: libconnector
           path: |
-            target/x86_64-pc-windows-gnu/release/*connector_jni.dll
+            target/release/*connector*.dll
             target/release/LICENSE-dependencies-windows
 
   build-java:
