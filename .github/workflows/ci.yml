@@ -24,6 +24,42 @@ jobs:
           name: libconnector
           path: target/release/libconnector.so
 
+  build-java:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install protobuf-compiler -y
+          rustup target add i686-linux-android
+          rustup target add x86_64-linux-android
+          rustup target add aarch64-linux-android
+          cargo install cargo-license
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cd libconnector-java
+          export CARGO_TARGET_DIR="$PWD/build/cargo"
+          (cd ../messages; cargo build -p messages --features protobuf)
+          export PROTO_DIR=src/main/resources
+          mkdir -p $PROTO_DIR
+          mkdir -p ../libconnector-java/src/main/proto
+          cp ../protocol/proto/{itd_ssdm_descriptions,cam*,cpm*,denm*,dsrc*,its*,mcm*,vam*,vru*}.proto $PROTO_DIR
+          protoc $PROTO_DIR/*.proto --proto_path=$PROTO_DIR --java_out=src/main/proto
+          ls -lah $PROTO_DIR
+          ls -lah ../libconnector-java/src/main/proto
+          (cd ..; cargo clean)
+          mvn package
+          cp target/connector-*-jar-with-dependencies.jar connector.jar
+          (cd ..; cargo license --current-dir libconnector-jni -d -a -t) | grep -iv it-designers | column -t -s $'\t' > LICENSE-dependencies
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector-java
+          path: |
+            libconnector-java/connector.jar
+            libconnector-java/LICENSE-dependencies
+
   build-android:
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +70,7 @@ jobs:
           rustup target add i686-linux-android
           rustup target add x86_64-linux-android
           rustup target add aarch64-linux-android
+          cargo install cargo-license
       - uses: actions/checkout@v3
       - name: Build
         run:  |
@@ -51,6 +88,7 @@ jobs:
           ./gradlew assembleRelease --info
           cp libconnector-android/build/outputs/aar/*.aar .
           mkdir test && cd test && unzip ../libconnector-android-release.aar
+          (cd ..; cargo license --current-dir libconnector-jni -d -a -t) | grep -iv it-designers | column -t -s $'\t' > LICENSE-dependencies
           file jni/arm64-v8a/libconnector_jni.so
           file jni/x86/libconnector_jni.so
           file jni/x86_64/libconnector_jni.so
@@ -59,5 +97,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: libconnector-android
-          path: libconnector-android/libconnector-android-release.aar
+          path: |
+            libconnector-android/libconnector-android-release.aar
+            libconnector-android/LICENSE-dependencies
   
