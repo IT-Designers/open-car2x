@@ -24,6 +24,25 @@ jobs:
           name: libconnector
           path: target/release/libconnector.so
 
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
+          rustup target add x86_64-pc-windows-gnu
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  cargo build --release --target x86_64-pc-windows-gnu
+      - name: Run tests
+        run: cargo test --release --target x86_64-pc-windows-gnu
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector
+          path: target/x86_64-pc-windows-gnu/release/*connector_jni.dll
+
   build-java:
     runs-on: ubuntu-latest
     steps:
@@ -31,9 +50,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install protobuf-compiler -y
-          rustup target add i686-linux-android
-          rustup target add x86_64-linux-android
-          rustup target add aarch64-linux-android
           cargo install cargo-license
       - uses: actions/checkout@v3
       - name: Build
