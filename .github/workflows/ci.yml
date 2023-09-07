@@ -2,15 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "ci-testing" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "ci-testing" ]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,3 +23,23 @@ jobs:
         with:
           name: libconnector
           path: target/release/libconnector.so
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cd libconnector-android
+          export CARGO_TARGET_DIR="$PWD/build/cargo"
+          (cd ../messages; cargo build -p messages --features protobuf)
+          export PROTO_DIR=libconnector-android/src/main/assets/proto
+          mkdir -p $PROTO_DIR
+          mkdir -p ../libconnector-java/src/main/proto
+          cp ../protocol/proto/{itd_ssdm_descriptions,cam*,cpm*,denm*,dsrc*,its*,mcm*,vam*,vru*}.proto $PROTO_DIR
+          protoc $PROTO_DIR/*.proto --proto_path=$PROTO_DIR --java_out=../libconnector-java/src/main/proto
+          (cd ..; cargo clean)
+          ./gradlew assembleRelease --info
+          cp libconnector-android/build/outputs/aar/*.aar .
+          ls -lah jni/*
+  
