@@ -138,9 +138,12 @@ jobs:
       - name: Build
         run:  |
           cargo build --release -p connector
+          mkdir -p examples/sample_client_c/{include,lib,proto}
           cp target/include/connector*.h examples/sample_client_c/include
           cp target/release/libconnector.so examples/sample_client_c/lib/
           cp protocol/asn/* examples/sample_client_c/proto/
           cd examples/sample_client_c/
+          git submodule sync --recursive
+          git submodule update --init --recursive
           ./build_asn1c.sh
           ./build_and_run.sh
