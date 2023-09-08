@@ -1,0 +1,13 @@
+diff --git a/skeletons/constr_SEQUENCE_OF.c b/skeletons/constr_SEQUENCE_OF.c
+index 2fdc38f2..02b1b340 100644
+--- a/skeletons/constr_SEQUENCE_OF.c
++++ b/skeletons/constr_SEQUENCE_OF.c
+@@ -213,7 +213,7 @@ SEQUENCE_OF_encode_uper(const asn_TYPE_descriptor_t *td,
+             er = elm->type->op->uper_encoder(
+                 elm->type, elm->encoding_constraints.per_constraints, memb_ptr,
+                 po);
+-            if(er.encoded == -1) ASN__ENCODE_FAILED;
++            if(er.encoded == -1) return er;
+         }
+ 
+         if(need_eom && uper_put_length(po, 0, 0))
