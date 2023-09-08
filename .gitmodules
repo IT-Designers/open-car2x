@@ -1,0 +1,3 @@
+[submodule "examples/sample_client_c/asn1c"]
+	path = examples/sample_client_c/asn1c
+	url = https://github.com/vlm/asn1c.git
