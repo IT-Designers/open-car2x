@@ -2,24 +2,149 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "ci-testing" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "ci-testing" ]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
+      - name: Install dependencies
+        run: |
+          cargo install cargo-license
       - uses: actions/checkout@v3
       - name: Build
-        run:  cargo build --release
+        run:  |
+          cargo build --release
+          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies
       - name: Run tests
         run: cargo test --release
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: libconnector
-          path: target/release/libconnector.so
+          name: libconnector-linux
+          path: |
+            target/release/*connector*.so
+            target/release/LICENSE-dependencies
+
+  build-windows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64
+          rustup target add x86_64-pc-windows-gnu
+          cargo install cargo-license
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cargo build --release --target x86_64-pc-windows-gnu
+          mv target/x86_64-pc-windows-gnu/release/*connector*.dll target/release/
+          cargo license --current-dir libconnector -d -a -t | grep -iv it-designers | column -t -s $'\t' > target/release/LICENSE-dependencies
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector-windows
+          path: |
+            target/release/*connector*.dll
+            target/release/LICENSE-dependencies
+
+  build-java:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install protobuf-compiler -y
+          cargo install cargo-license
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cd libconnector-java
+          export CARGO_TARGET_DIR="$PWD/build/cargo"
+          (cd ../messages; cargo build -p messages --features protobuf)
+          export PROTO_DIR=src/main/resources
+          mkdir -p $PROTO_DIR
+          mkdir -p ../libconnector-java/src/main/proto
+          cp ../protocol/proto/{itd_ssdm_descriptions,cam*,cpm*,denm*,dsrc*,its*,mcm*,vam*,vru*}.proto $PROTO_DIR
+          protoc $PROTO_DIR/*.proto --proto_path=$PROTO_DIR --java_out=src/main/proto
+          ls -lah $PROTO_DIR
+          ls -lah ../libconnector-java/src/main/proto
+          (cd ..; cargo clean)
+          mvn package
+          cp target/connector-*-jar-with-dependencies.jar connector.jar
+          (cd ..; cargo license --current-dir libconnector-jni -d -a -t) | grep -iv it-designers | column -t -s $'\t' > LICENSE-dependencies
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector-java
+          path: |
+            libconnector-java/connector.jar
+            libconnector-java/LICENSE-dependencies
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install protobuf-compiler -y
+          rustup target add i686-linux-android
+          rustup target add x86_64-linux-android
+          rustup target add aarch64-linux-android
+          cargo install cargo-license
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cd libconnector-android
+          export CARGO_TARGET_DIR="$PWD/build/cargo"
+          (cd ../messages; cargo build -p messages --features protobuf)
+          export PROTO_DIR=libconnector-android/src/main/assets/proto
+          mkdir -p $PROTO_DIR
+          mkdir -p ../libconnector-java/src/main/proto
+          cp ../protocol/proto/{itd_ssdm_descriptions,cam*,cpm*,denm*,dsrc*,its*,mcm*,vam*,vru*}.proto $PROTO_DIR
+          protoc $PROTO_DIR/*.proto --proto_path=$PROTO_DIR --java_out=../libconnector-java/src/main/proto
+          ls -lah $PROTO_DIR
+          ls -lah ../libconnector-java/src/main/proto
+          (cd ..; cargo clean)
+          ./gradlew assembleRelease --info
+          cp libconnector-android/build/outputs/aar/*.aar .
+          mkdir test && cd test && unzip ../libconnector-android-release.aar
+          (cd ..; cargo license --current-dir libconnector-jni -d -a -t) | grep -iv it-designers | column -t -s $'\t' > LICENSE-dependencies
+          file jni/arm64-v8a/libconnector_jni.so
+          file jni/x86/libconnector_jni.so
+          file jni/x86_64/libconnector_jni.so
+          ls -lah jni/*
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: libconnector-android
+          path: |
+            libconnector-android/libconnector-android-release.aar
+            libconnector-android/LICENSE-dependencies
+  
+  test-sample-client-c:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          cargo install cargo-license
+      - uses: actions/checkout@v3
+      - name: Build
+        run:  |
+          cargo build --release -p connector
+          mkdir -p examples/sample_client_c/{include,lib,proto}
+          cp target/include/connector*.h examples/sample_client_c/include
+          cp target/release/libconnector.so examples/sample_client_c/lib/
+          cp protocol/asn/* examples/sample_client_c/proto/
+          cd examples/sample_client_c/
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          cp -R ../../protocol/asn/* proto/
+          ./build_asn1c.sh
+          ./build_and_run.sh

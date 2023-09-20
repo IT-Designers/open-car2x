@@ -1,0 +1,24 @@
+From c35ebd330b7c7e15c1bd61c9782e4259bd9bcb03 Mon Sep 17 00:00:00 2001
+From: Raphael Riebl <raphael@riebl.net>
+Date: Sat, 31 Oct 2020 10:25:40 +0100
+Subject: [PATCH] keep SizeConstraints extensible
+
+Fix #290, #383, #407 where APC_EXTENSIBLE is lost for SEQUENCE SIZE(, ...) OF
+---
+ libasn1fix/asn1fix_constraint.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/libasn1fix/asn1fix_constraint.c b/libasn1fix/asn1fix_constraint.c
+index cf29a336..dbd28c88 100644
+--- a/libasn1fix/asn1fix_constraint.c
++++ b/libasn1fix/asn1fix_constraint.c
+@@ -238,6 +238,9 @@ _remove_extensions(arg_t *arg, asn1p_constraint_t *ct, int forgive_last) {
+ 
+ 	if(!ct) return;
+ 
++	/* Keep extensible SizeConstraint */
++	if(ct->type == ACT_CT_SIZE && forgive_last) return;
++
+ 	for(i = 0; i < ct->el_count; i++) {
+ 		if(ct->elements[i]->type == ACT_EL_EXT)
+ 			break;
