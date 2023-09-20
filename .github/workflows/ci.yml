@@ -145,6 +145,6 @@ jobs:
           cd examples/sample_client_c/
           git submodule sync --recursive
           git submodule update --init --recursive
-          cp ../protocol/proto . -R
+          cp -R ../../protocol/asn proto
           ./build_asn1c.sh
           ./build_and_run.sh
