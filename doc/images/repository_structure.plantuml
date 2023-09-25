@@ -1,0 +1,36 @@
+component "open-car2x Repository" {
+    portin "C-API" as cpi
+    portin "APK" as apk
+    portin "JAR" as jar
+
+    component "libconnector" #FFDDAA
+    component "libconnector-jni" #FFCAAA
+    component "libconnector-java" #FFAABA
+    component "libconnector-android" #FFAAAA
+
+    component "common-build-info" #DAFFDA
+    component "common-edge" #FADAFF
+    component "common-log-build-info" #DADAFF
+    component "common-*"
+
+    component "messages" #FFEEBB
+
+
+    cpi -> "libconnector"
+    jar -> "libconnector-java"
+    apk -> "libconnector-android"
+
+    "libconnector" --> "common-build-info"
+    "libconnector" --> "common-edge"
+    "libconnector" --> "common-log-build-info"
+    "libconnector" ---> "messages"
+
+    "libconnector-jni" --> "libconnector"
+    "libconnector-java" --> "libconnector-jni"
+    "libconnector-android" --> "libconnector-java"
+
+    "common-edge" --> "messages"
+    "common-edge" --> "common-*"
+    "common-log-build-info" --> "common-*"
+
+}
