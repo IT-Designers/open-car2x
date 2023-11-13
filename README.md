@@ -25,6 +25,7 @@ While it explicitly mentions Android and `.aar` files, the same packaging struct
 
 ![libconnector_android_overview](doc/images/libconnector_anrdoid_overview.png)
 
+See also [libconnector-android/libconnector-android/build.gradle Line 12](libconnector-android/libconnector-android/build.gradle), for the target configurations.
 
 ## Crate `messages` and the `protocol` directory
 
