@@ -1,7 +1,7 @@
 # Communication Library for Car2X projects
 
 The code of this project was used for the communication in [LUKAS] and is now available as Open Source and licensed
-under [GPLv3] or [MIT], choose as you like.
+under [MIT].
 
 # Repository Structure
 
@@ -148,8 +148,7 @@ The copyright of some protocol definitions in `protocol/asn` are hold by ETSI or
 Note: Some ETSI protocols were altered to better suite the use cases of [LUKAS].
 
 [LUKAS]: https://projekt-lukas.de
-[GPLv3]: LICENSE
-[MIT]: LICENSE-MIT
+[MIT]: LICENSE
 
 [Copyright 2019 ETSI]: LICENSE_ETSI_2019
 [Copyright 2020 ETSI]: LICENSE_ETSI_2020
